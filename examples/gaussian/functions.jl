@@ -27,4 +27,5 @@ function train_model(model,n_epochs, loss_fn, data, labels, opt; show_progress=t
         current_loss = round(loss[i], digits=4)
         next!(meter; showvalues = [(:iter,i),(:loss,current_loss)])
     end
+    return loss
 end

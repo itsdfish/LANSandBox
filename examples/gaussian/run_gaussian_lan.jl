@@ -14,7 +14,7 @@ Random.seed!(2202152)
 #                                     Generate Training Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 1000
+n_parms = 10_000
 # number of data points per parameter vector 
 n_samples = 100
 # training data
@@ -27,17 +27,17 @@ labels = reshape(labels, 1, length(labels))
 ###################################################################################################
 # 3 nodes in input layer, 3 hidden layers, 1 node for output layer
 model = Chain(
-    Dense(3, 80, tanh),
-    Dense(80, 80, tanh),
-    Dense(80, 96, tanh),
-    Dense(96, 1, identity)
+    Dense(3, 100, tanh),
+    Dense(100, 100, tanh),
+    Dense(100, 120, tanh),
+    Dense(120, 1, identity)
 )
 
 # check our model
 params(model)
 
 # loss function
-loss_fn(a, b) = Flux.mse(model(a), b) 
+loss_fn(a, b) = Flux.huber_loss(model(a), b) 
 
 # optimization algorithm 
 opt = ADAM(0.005)
@@ -48,7 +48,7 @@ opt = ADAM(0.005)
 n_epochs = 500
 
 # train the model
-loss = train_model(model,n_epochs, loss_fn, data, labels, opt)
+loss = train_model(model, n_epochs, loss_fn, data, labels, opt)
 
 # save the model for later
 @save "gaussian_model.bson" model

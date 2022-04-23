@@ -41,7 +41,7 @@ for i in 1:20
     parms = rand_parms()
     dist = Normal(parms...)
 
-    x = range(-parms.σ′*2 + parms.μ, parms.σ′*2 + parms.μ, length=100)
+    x = range(-parms.σ′*3 + parms.μ, parms.σ′*3 + parms.μ, length=100)
     y1 = map(x -> pdf(dist, x), x)
     y2 = mapreduce(x -> model([parms...,x]),vcat, x)
 
