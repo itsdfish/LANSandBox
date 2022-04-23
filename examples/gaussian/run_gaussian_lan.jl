@@ -9,6 +9,7 @@ using Flux: params
 using BSON: @save
 include("functions.jl")
 Random.seed!(2202152)
+# https://stackoverflow.com/questions/16226692/git-how-to-add-a-file-but-not-track-it/16229387
 ###################################################################################################
 #                                     Generate Training Data
 ###################################################################################################
@@ -66,20 +67,3 @@ scatter(
     grid=false,
     leg=false
 )
-
-# interpolated densities 
-plots = Plots.Plot[]
-for i in 1:20
-    parms = rand_parms()
-    dist = Normal(parms...)
-
-    x = range(-parms.σ′*2 + parms.μ, parms.σ′*2 + parms.μ, length=100)
-    y1 = map(x -> pdf(dist, x), x)
-    y2 = mapreduce(x -> model([parms...,x]),vcat, x)
-
-    p1 = plot(x, y1, grid=false, label="true")
-    plot!(x, y2, label="predicted")
-    push!(plots, p1)
-    display(p1)
-    sleep(.3)
-end

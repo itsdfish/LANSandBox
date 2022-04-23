@@ -4,12 +4,24 @@
 cd(@__DIR__)
 using Pkg
 Pkg.activate("../..")
-using Plots, Distributions, Random, ProgressMeter
+using Plots, Flux, Distributions, Random, ProgressMeter
 using Flux: params
 using BSON: @load
 include("functions.jl")
 Random.seed!(2202152)
-@load "mymodel.bson" model
+@load "gaussian_model.bson" model
+###################################################################################################
+#                                      Regenerate Data
+###################################################################################################
+# number of parameter vectors for training 
+n_parms = 1000
+# number of data points per parameter vector 
+n_samples = 100
+# training data
+data = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
+# true values 
+labels = map(i -> pdf(Normal(data[1,i], data[2,i]), data[3,i]), 1:size(data,2))
+labels = reshape(labels, 1, length(labels))
 ###################################################################################################
 #                                      Plot Densities
 ###################################################################################################
