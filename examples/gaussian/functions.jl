@@ -18,11 +18,11 @@ function make_training_data(n)
     return output
 end
 
-function train_model(model,n_epochs, loss_fn, data, labels, opt; show_progress=true)
+function train_model(model,n_epochs, loss_fn, all_data, opt; show_progress=true)
     meter = Progress(n_epochs; enabled=show_progress)
     loss = zeros(n_epochs)
     @showprogress for i in 1:n_epochs
-        Flux.train!(loss_fn, params(model), [(data, labels)], opt)
+        Flux.train!(loss_fn, params(model), all_data, opt)
         loss[i] = loss_fn(data, labels)
         current_loss = round(loss[i], digits=4)
         next!(meter; showvalues = [(:iter,i),(:loss,current_loss)])

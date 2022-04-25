@@ -22,6 +22,7 @@ data = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 # true values 
 labels = map(i -> pdf(Normal(data[1,i], data[2,i]), data[3,i]), 1:size(data,2))
 labels = reshape(labels, 1, length(labels))
+all_data = Flux.Data.DataLoader((data, labels), batchsize=1000)
 ###################################################################################################
 #                                        Create Network
 ###################################################################################################
@@ -45,10 +46,10 @@ opt = ADAM(0.005)
 #                                       Train Network
 ###################################################################################################
 # number of Epochs to run
-n_epochs = 500
+n_epochs = 100
 
 # train the model
-loss = train_model(model, n_epochs, loss_fn, data, labels, opt)
+loss = train_model(model, n_epochs, loss_fn, all_data, opt)
 
 # save the model for later
 @save "gaussian_model.bson" model
