@@ -14,9 +14,9 @@ Random.seed!(2202152)
 #                                     Generate Training Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 10_000
+n_parms = 25_000
 # number of data points per parameter vector 
-n_samples = 100
+n_samples = 250
 # training data
 data = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 # true values 
@@ -41,12 +41,12 @@ params(model)
 loss_fn(a, b) = Flux.huber_loss(model(a), b) 
 
 # optimization algorithm 
-opt = ADAM(0.005)
+opt = ADAM(0.002)
 ###################################################################################################
 #                                       Train Network
 ###################################################################################################
 # number of Epochs to run
-n_epochs = 100
+n_epochs = 50
 
 # train the model
 loss = train_model(model, n_epochs, loss_fn, all_data, opt)
@@ -57,7 +57,7 @@ loss = train_model(model, n_epochs, loss_fn, all_data, opt)
 #                                      Plot Training
 ###################################################################################################
 # plot the loss data
-loss_plt = plot(1:n_epochs, loss, xlabel="Epochs", legend=:none, ylabel="Loss (mse)")
+loss_plt = plot(1:n_epochs, loss, xlabel="Epochs", legend=:none, ylabel="Loss (huber)")
 
 # plot predictions against true values 
 scatter(
