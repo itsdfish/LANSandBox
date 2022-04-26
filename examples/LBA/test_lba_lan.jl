@@ -39,11 +39,11 @@ scatter(
 plots = Plots.Plot[]
 for i in 1:20
     parms = rand_parms()
-    dist = Normal(parms...)
+    dist = LBA(;parms...)
 
-    x = range(-parms.σ′*3 + parms.μ, parms.σ′*3 + parms.μ, length=100)
-    y1 = map(x -> pdf(dist, x), x)
-    y2 = mapreduce(x -> model([parms...,x]),vcat, x)
+    x = range(0.1, 3.0, length=100)
+    y1 = map(x -> pdf(dist, x), 1, x)
+    y2 = mapreduce(x -> model([vcat(parms...)...,1,x]),vcat, x)
 
     p1 = plot(x, y1, grid=false, label="true")
     plot!(x, y2, label="predicted")
