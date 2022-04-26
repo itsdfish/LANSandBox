@@ -34,5 +34,5 @@ function train_model(model, n_epochs, loss_fn, all_data, opt; show_progress=true
 end
 
 function gen_label(data)
-    pdf(LBA(;ν=data[1:2,i],A=data[3,i], k=data[4,i], τ=data[5,i]), Int(data[6]), data[7,i])
+    pdf(LBA(;ν=data[1:2],A=data[3], k=data[4], τ=data[5]), Int(data[6]), data[7])
 end
