@@ -26,9 +26,10 @@ labels = reshape(labels, 1, length(labels))
 #                                      Plot Densities
 ###################################################################################################
 # plot predictions against true values 
+idx = rand(1:length(labels), 10000)
 scatter(
-    labels[:], 
-    model(data)[:], 
+    labels[idx], 
+    model(data[:,idx])[:], 
     xlabel="true density", 
     ylabel="predicted density", 
     grid=false,

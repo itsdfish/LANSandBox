@@ -23,12 +23,17 @@ end
 
 function train_model(model, n_epochs, loss_fn, all_data, opt; show_progress=true)
     meter = Progress(n_epochs; enabled=show_progress)
-    loss = zeros(n_epochs)
+    losses = zeros(n_epochs)
+    max_loss = -Inf
+    min_loss = Inf
     @showprogress for i in 1:n_epochs
         Flux.train!(loss_fn, params(model), all_data, opt)
-        loss[i] = loss_fn(data, labels)
-        current_loss = round(loss[i], digits=4)
-        next!(meter; showvalues = [(:iter,i),(:loss,current_loss)])
+        losses[i] = loss_fn(data, labels)
+        loss = round(losses[i], digits=4)
+        max_loss = loss >  max_loss ? loss : max_loss 
+        min_loss = loss <  min_loss ? loss : min_loss
+        values = [(:iter,i),(:loss,loss), (:max_loss, max_loss), (:min_loss,min_loss)]
+        next!(meter; showvalues = values)
     end
     return loss
 end

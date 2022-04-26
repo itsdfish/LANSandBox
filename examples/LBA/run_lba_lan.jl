@@ -13,7 +13,7 @@ Random.seed!(858532)
 #                                     Generate Training Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 1000
+n_parms = 200 #25_000
 # number of data points per parameter vector 
 n_samples = 250
 # training data
@@ -21,16 +21,18 @@ data = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 # true values 
 labels = map(i -> gen_label(data[:,i]), 1:size(data,2))
 labels = reshape(labels, 1, length(labels))
-all_data = Flux.Data.DataLoader((data, labels), batchsize=4000)
+all_data = Flux.Data.DataLoader((data, labels), batchsize=100)
 ###################################################################################################
 #                                        Create Network
 ###################################################################################################
 # 7 nodes in input layer, 3 hidden layers, 1 node for output layer
 model = Chain(
     Dense(7, 100, tanh),
-    #BatchNorm(100,relu),
+    BatchNorm(100,relu),
     Dense(100, 100, tanh),
+    BatchNorm(100,relu),
     Dense(100, 120, tanh),
+    BatchNorm(120,relu),
     Dense(120, 1, identity)
 )
 
@@ -41,7 +43,7 @@ params(model)
 loss_fn(a, b) = Flux.huber_loss(model(a), b) 
 
 # optimization algorithm 
-opt = ADAM(0.002)
+opt = ADAM(0.001)
 ###################################################################################################
 #                                       Train Network
 ###################################################################################################
