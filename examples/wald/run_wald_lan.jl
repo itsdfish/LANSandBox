@@ -8,12 +8,12 @@ using Plots, Flux, Distributions, Random, ProgressMeter, SequentialSamplingModel
 using Flux: params
 using BSON: @save
 include("functions.jl")
-Random.seed!(858532)
+Random.seed!(9958552)
 ###################################################################################################
 #                                     Generate Training Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 25_000
+n_parms = 2_000
 # number of data points per parameter vector 
 n_samples = 250
 # training data
@@ -25,11 +25,14 @@ all_data = Flux.Data.DataLoader((data, labels), batchsize=1000)
 ###################################################################################################
 #                                        Create Network
 ###################################################################################################
-# 7 nodes in input layer, 3 hidden layers, 1 node for output layer
+# 4 nodes in input layer, 3 hidden layers, 1 node for output layer
 model = Chain(
-    Dense(7, 100, tanh),
+    Dense(4, 100, tanh),
+    #BatchNorm(100, relu),
     Dense(100, 100, tanh),
+    #BatchNorm(100, relu),
     Dense(100, 120, tanh),
+    #BatchNorm(120, relu),
     Dense(120, 1, identity)
 )
 
@@ -40,7 +43,7 @@ params(model)
 loss_fn(a, b) = Flux.huber_loss(model(a), b) 
 
 # optimization algorithm 
-opt = ADAM(0.002)
+opt = ADAM(0.001, (.7,.7))
 ###################################################################################################
 #                                       Train Network
 ###################################################################################################
@@ -51,7 +54,7 @@ n_epochs = 50
 loss = train_model(model, n_epochs, loss_fn, all_data, opt)
 
 # save the model for later
-@save "lba_model.bson" model
+@save "wald_model.bson" model
 ###################################################################################################
 #                                      Plot Training
 ###################################################################################################
