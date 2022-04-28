@@ -1,8 +1,10 @@
 function sample_mixture(ν, A, k, τ)
     if rand() ≤ .8 
-        dist = LBA(;ν, A, k, τ)
-        c,rt = rand(dist)
-        rt = min(rt, 20.0)
+        c,rt = 0,Inf
+        while rt > 20
+            dist = LBA(;ν, A, k, τ)
+            c,rt = rand(dist)
+        end
         return c,rt 
     end 
     return (rand(1:length(ν)), rand(Uniform(.1, 3)))
@@ -10,7 +12,7 @@ end
 
 function rand_parms()
     ν = rand(Uniform(0, 5), 2)
-    A = rand(Uniform(.05, 2))
+    A = rand(Uniform(.02, 2))
     k = rand(Uniform(.05, 1))
     τ = rand(Uniform(.1, .6))
     return (;ν,A,k,τ)

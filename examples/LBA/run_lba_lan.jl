@@ -13,15 +13,15 @@ Random.seed!(858532)
 #                                     Generate Training Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 25_000
+n_parms = 1_000
 # number of data points per parameter vector 
-n_samples = 250
+n_samples = 400
 # training data
 data = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 # true values 
 labels = map(i -> gen_label(data[:,i]), 1:size(data,2))
 labels = reshape(labels, 1, length(labels))
-all_data = Flux.Data.DataLoader((data, labels), batchsize=1000)
+all_data = Flux.Data.DataLoader((data, labels), batchsize = 500)
 ###################################################################################################
 #                                        Create Network
 ###################################################################################################

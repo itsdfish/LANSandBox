@@ -1,6 +1,6 @@
 name = "LANSandBox"
 uuid = "baa75641-05d7-426a-9816-ed63a81884ef"
-authors = ["itsdfish <itsdfish@gmail.com> and contributors"]
+authors = ["itsdfish"]
 version = "0.1.0"
 
 [deps]

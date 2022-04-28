@@ -8,8 +8,8 @@ using Plots, Flux, Distributions, Random, ProgressMeter
 using Flux: params
 using BSON: @load
 include("functions.jl")
-Random.seed!(2202152)
-@load "gaussian_model.bson" model
+Random.seed!(858532)
+@load "lba_model.bson" model
 ###################################################################################################
 #                                      Regenerate Data
 ###################################################################################################
@@ -42,8 +42,8 @@ for i in 1:20
     dist = LBA(;parms...)
 
     x = range(0.1, 3.0, length=100)
-    y1 = map(x -> pdf(dist, x), 1, x)
-    y2 = mapreduce(x -> model([vcat(parms...)...,1,x]),vcat, x)
+    y1 = map(x -> pdf(dist, 1, x), x)
+    y2 = mapreduce(x -> model([vcat(parms...)...,1,x]), vcat, x)
 
     p1 = plot(x, y1, grid=false, label="true")
     plot!(x, y2, label="predicted")
