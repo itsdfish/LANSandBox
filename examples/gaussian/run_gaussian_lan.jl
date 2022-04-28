@@ -18,11 +18,11 @@ n_parms = 25_000
 # number of data points per parameter vector 
 n_samples = 250
 # training data
-data = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
+train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 # true values 
-labels = map(i -> pdf(Normal(data[1,i], data[2,i]), data[3,i]), 1:size(data,2))
-labels = reshape(labels, 1, length(labels))
-all_data = Flux.Data.DataLoader((data, labels), batchsize=1000)
+train_y = map(i -> pdf(Normal(train_x[1,i], train_x[2,i]), train_x[3,i]), 1:size(train_x,2))
+train_y = reshape(train_y, 1, length(train_y))
+train_data = Flux.Data.DataLoader((train_x, train_y), batchsize=1000)
 ###################################################################################################
 #                                        Create Network
 ###################################################################################################
@@ -49,7 +49,16 @@ opt = ADAM(0.002)
 n_epochs = 50
 
 # train the model
-loss = train_model(model, n_epochs, loss_fn, all_data, opt)
+train_loss,test_loss = train_model(
+    model, 
+    n_epochs, 
+    loss_fn, 
+    train_data,
+    train_x,
+    train_y,
+    test_data, 
+    opt
+)
 
 # save the model for later
 @save "gaussian_model.bson" model
@@ -57,14 +66,15 @@ loss = train_model(model, n_epochs, loss_fn, all_data, opt)
 #                                      Plot Training
 ###################################################################################################
 # plot the loss data
-loss_plt = plot(1:n_epochs, loss, xlabel="Epochs", legend=:none, ylabel="Loss (huber)")
+loss_plt = plot(1:n_epochs, train_loss, xlabel="Epochs", ylabel="Loss (huber)", label="training")
+plot!(1:n_epochs, test_loss, label="test")
 
 # plot predictions against true values 
 scatter(
-    labels[:], 
-    model(data)[:], 
-    xlabel="true density", 
-    ylabel="predicted density", 
-    grid=false,
-    leg=false
+    train_y[:], 
+    model(train_x)[:], 
+    xlabel = "true density", 
+    ylabel = "predicted density", 
+    grid = false,
+    leg = false
 )

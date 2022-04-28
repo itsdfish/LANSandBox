@@ -17,22 +17,29 @@ n_parms = 2_000
 # number of data points per parameter vector 
 n_samples = 250
 # training data
-data = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
+train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 # true values 
-labels = map(i -> gen_label(data[:,i]), 1:size(data,2))
-labels = reshape(labels, 1, length(labels))
-all_data = Flux.Data.DataLoader((data, labels), batchsize=1000)
+train_y = map(i -> gen_label(train_x[:,i]), 1:size(train_x,2))
+train_y = reshape(train_y, 1, length(train_y))
+all_data = Flux.Data.DataLoader((train_x, train_y), batchsize=1000)
+###################################################################################################
+#                                     Generate Test Data
+###################################################################################################
+n_parms_test = 1000
+n_samples_test = 100
+test_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
+# true values 
+test_y = map(i -> gen_label(test_x[:,i]), 1:size(test_x,2))
+test_y = reshape(test_y, 1, length(test_y))
+test_data = Flux.Data.DataLoader((test_x, test_y), batchsize=1000)
 ###################################################################################################
 #                                        Create Network
 ###################################################################################################
 # 4 nodes in input layer, 3 hidden layers, 1 node for output layer
 model = Chain(
     Dense(4, 100, tanh),
-    #BatchNorm(100, relu),
     Dense(100, 100, tanh),
-    #BatchNorm(100, relu),
     Dense(100, 120, tanh),
-    #BatchNorm(120, relu),
     Dense(120, 1, identity)
 )
 
@@ -51,20 +58,30 @@ opt = ADAM(0.001, (.7,.7))
 n_epochs = 50
 
 # train the model
-loss = train_model(model, n_epochs, loss_fn, all_data, opt)
+train_loss,test_loss = train_model(
+    model, 
+    n_epochs, 
+    loss_fn, 
+    train_data,
+    train_x,
+    train_y,
+    test_data, 
+    opt
+)
+
 
 # save the model for later
 @save "wald_model.bson" model
 ###################################################################################################
 #                                      Plot Training
 ###################################################################################################
-# plot the loss data
-loss_plt = plot(1:n_epochs, loss, xlabel="Epochs", legend=:none, ylabel="Loss (huber)")
+loss_plt = plot(1:n_epochs, train_loss, xlabel="Epochs", ylabel="Loss (huber)", label="training")
+plot!(1:n_epochs, test_loss, label="test")
 
 # plot predictions against true values 
 scatter(
-    labels[:], 
-    model(data)[:], 
+    train_y[:], 
+    model(train_x)[:], 
     xlabel = "true density", 
     ylabel = "predicted density", 
     grid = false,

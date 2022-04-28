@@ -14,9 +14,9 @@ Random.seed!(858532)
 #                                      Regenerate Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 25_000
+n_parms = 40_000
 # number of data points per parameter vector 
-n_samples = 250
+n_samples = 400
 # training data
 data = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 # true values 
