@@ -4,7 +4,7 @@
 cd(@__DIR__)
 using Pkg
 Pkg.activate("../..")
-using Plots, Flux, Distributions, Random, ProgressMeter, SequentialSamplingModels
+using MKL, Plots, Flux, Distributions, Random, ProgressMeter, SequentialSamplingModels
 using Flux: params
 using BSON: @save
 include("functions.jl")
@@ -13,13 +13,15 @@ Random.seed!(858532)
 #                                     Generate Training Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 100
+n_parms = 40_000
 # number of data points per parameter vector 
-n_samples = 100
+n_samples = 200
 # training data
 train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
+train_x = Float32.(train_x)
 # true values 
 train_y = map(i -> gen_label(train_x[:,i]), 1:size(train_x,2))
+train_y = Float32.(train_y)
 train_y = reshape(train_y, 1, length(train_y))
 train_data = Flux.Data.DataLoader((train_x, train_y), batchsize = 50)
 ###################################################################################################
@@ -28,8 +30,10 @@ train_data = Flux.Data.DataLoader((train_x, train_y), batchsize = 50)
 n_parms_test = 1000
 n_samples_test = 100
 test_x = mapreduce(_ -> make_training_data(n_samples_test), hcat, 1:n_parms_test)
+test_x = Float32.(test_x)
 # true values 
 test_y = map(i -> gen_label(test_x[:,i]), 1:size(test_x,2))
+test_y = Float32.(test_y)
 test_y = reshape(test_y, 1, length(test_y))
 test_data = (x=test_x,y=test_y)
 ###################################################################################################
@@ -78,10 +82,11 @@ train_loss,test_loss = train_model(
 loss_plt = plot(1:n_epochs, train_loss, xlabel="Epochs", ylabel="Loss (huber)", label="training")
 plot!(1:n_epochs, test_loss, label="test")
 
-# plot predictions against true values 
+# plot predictions against true values
+idx = rand(1:size(train_y, 2), 1000) 
 scatter(
-    train_y[:], 
-    model(train_x)[:], 
+    train_y[idx], 
+    model(train_x)[idx], 
     xlabel = "true density", 
     ylabel = "predicted density", 
     grid = false,

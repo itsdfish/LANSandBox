@@ -19,7 +19,7 @@ function rand_parms()
 end
 
 function make_training_data(n)
-    output = fill(0.0, 7, n)    
+    output = zeros(Float32, 7, n)    
     ν,A,k,τ = rand_parms()
     x = map(_ -> sample_mixture(ν, A, k, τ), 1:n)
     for (i,v) in enumerate(x)

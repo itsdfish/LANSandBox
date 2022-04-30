@@ -16,19 +16,22 @@ Random.seed!(858532)
 # number of parameter vectors for training 
 n_parms = 40_000
 # number of data points per parameter vector 
-n_samples = 400
+n_samples = 200
 # training data
-data = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
+train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
+train_x = Float32.(train_x)
 # true values 
-labels = map(i -> pdf(Normal(data[1,i], data[2,i]), data[3,i]), 1:size(data,2))
-labels = reshape(labels, 1, length(labels))
+train_y = map(i -> gen_label(train_x[:,i]), 1:size(train_x,2))
+train_y = Float32.(train_y)
+train_y = reshape(train_y, 1, length(train_y))
 ###################################################################################################
 #                                      Plot Densities
 ###################################################################################################
 # plot predictions against true values 
+idx = rand(1:size(train_y, 2), 1000) 
 scatter(
-    labels[:], 
-    model(data)[:], 
+    train_y[idx], 
+    model(train_x)[idx], 
     xlabel = "true density", 
     ylabel = "predicted density", 
     grid = false,

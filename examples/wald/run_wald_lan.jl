@@ -18,9 +18,11 @@ n_parms = 2_000
 n_samples = 250
 # training data
 train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
+train_x = Float32.(train_x)
 # true values 
 train_y = map(i -> gen_label(train_x[:,i]), 1:size(train_x,2))
 train_y = reshape(train_y, 1, length(train_y))
+train_y = Float32.(train_y)
 all_data = Flux.Data.DataLoader((train_x, train_y), batchsize=1000)
 ###################################################################################################
 #                                     Generate Test Data
@@ -28,6 +30,7 @@ all_data = Flux.Data.DataLoader((train_x, train_y), batchsize=1000)
 n_parms_test = 1000
 n_samples_test = 100
 test_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
+
 # true values 
 test_y = map(i -> gen_label(test_x[:,i]), 1:size(test_x,2))
 test_y = reshape(test_y, 1, length(test_y))

@@ -9,7 +9,7 @@ function rand_parms()
 end
 
 function make_training_data(n)
-    output = fill(0.0, 3, n)    
+    output = zeros(Float32, 3, n)    
     μ,σ′ = rand_parms()
     x = map(_ -> sample_mixture(μ, σ′), 1:n)
     for (i,v) in enumerate(x)
@@ -17,6 +17,7 @@ function make_training_data(n)
     end
     return output
 end
+
 function train_model(
     model, 
     n_epochs, 
