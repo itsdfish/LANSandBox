@@ -13,9 +13,9 @@ Random.seed!(858532)
 #                                     Generate Training Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 40_000
+n_parms = 2_000
 # number of data points per parameter vector 
-n_samples = 400
+n_samples = 200
 # training data
 train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 train_x = Float32.(train_x)

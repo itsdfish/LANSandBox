@@ -5,9 +5,9 @@ function sample_mixture(ν, A, k, τ)
             dist = LBA(;ν, A, k, τ)
             c,rt = rand(dist)
         end
-        return c,rt 
+        return rt
     end 
-    return (rand(1:length(ν)), rand(Uniform(.1, 3)))
+    return rand(Uniform(.1, 2))
 end
 
 function rand_parms()
@@ -19,11 +19,14 @@ function rand_parms()
 end
 
 function make_training_data(n)
-    output = zeros(Float32, 7, n)    
     ν,A,k,τ = rand_parms()
-    x = map(_ -> sample_mixture(ν, A, k, τ), 1:n)
-    for (i,v) in enumerate(x)
-        output[:,i] = [ν...,A,k,τ,v...]
+    n_options = length(ν)
+    output = zeros(Float32, 5 + n_options, n * n_options)    
+    rts = map(_ -> sample_mixture(ν, A, k, τ), 1:n)
+    i = 1
+    for rt in rts, j in 1:n_options
+        output[:,i] = [ν...,A,k,τ,j,rt]
+        i += 1
     end
     return output
 end
