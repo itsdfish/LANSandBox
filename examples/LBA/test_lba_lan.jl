@@ -14,7 +14,7 @@ Random.seed!(858532)
 #                                      Regenerate Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 40_000
+n_parms = 50_000
 # number of data points per parameter vector 
 n_samples = 200
 # training data
@@ -27,13 +27,26 @@ train_y = reshape(train_y, 1, length(train_y))
 ###################################################################################################
 #                                      Plot Densities
 ###################################################################################################
-# plot predictions against true values 
-idx = rand(1:size(train_y, 2), 1000) 
+# plot predictions against true values
+idx = rand(1:size(train_y, 2), 100_000) 
+sub_train_y = train_y[idx]
+pred_y = model(train_x[:,:idx])[:]
+residual = pred_y .- sub_train_y
+
 scatter(
-    train_y[idx], 
-    model(train_x)[idx], 
+    sub_train_y, 
+    pred_y, 
     xlabel = "true density", 
     ylabel = "predicted density", 
+    grid = false,
+    leg = false
+)
+
+scatter(
+    sub_train_y, 
+    residual, 
+    xlabel = "true density", 
+    ylabel = "residual", 
     grid = false,
     leg = false
 )

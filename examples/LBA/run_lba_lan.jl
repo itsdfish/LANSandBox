@@ -4,7 +4,7 @@
 cd(@__DIR__)
 using Pkg
 Pkg.activate("../..")
-using MKL, Plots, Flux, Distributions, Random, ProgressMeter, SequentialSamplingModels
+using LANSandBox, MKL, Plots, Flux, Distributions, Random, ProgressMeter, SequentialSamplingModels
 using Flux: params
 using BSON: @save
 include("functions.jl")
@@ -15,15 +15,15 @@ Random.seed!(858532)
 # number of parameter vectors for training 
 n_parms = 40_000
 # number of data points per parameter vector 
-n_samples = 200
+n_samples = 400
 # training data
 train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 train_x = Float32.(train_x)
 # true values 
-train_y = map(i -> gen_label(train_x[:,i]), 1:size(train_x,2))
+train_y = map(i -> gen_label(train_x[:,i]), 1:size(train_x, 2))
 train_y = Float32.(train_y)
 train_y = reshape(train_y, 1, length(train_y))
-train_data = Flux.Data.DataLoader((train_x, train_y), batchsize = 50)
+train_data = Flux.Data.DataLoader((train_x, train_y), batchsize = 30_000)
 ###################################################################################################
 #                                   Generate Test Data
 ###################################################################################################
@@ -83,12 +83,25 @@ loss_plt = plot(1:n_epochs, train_loss, xlabel="Epochs", ylabel="Loss (huber)", 
 plot!(1:n_epochs, test_loss, label="test")
 
 # plot predictions against true values
-idx = rand(1:size(train_y, 2), 1000) 
+idx = rand(1:size(train_y, 2), 100_000) 
+sub_train_y = train_y[idx]
+pred_y = model(train_x[:,:idx])[:]
+residual = pred_y .- sub_train_y
+
 scatter(
-    train_y[idx], 
-    model(train_x)[idx], 
+    sub_train_y, 
+    pred_y, 
     xlabel = "true density", 
     ylabel = "predicted density", 
+    grid = false,
+    leg = false
+)
+
+scatter(
+    sub_train_y, 
+    residual, 
+    xlabel = "true density", 
+    ylabel = "residual", 
     grid = false,
     leg = false
 )

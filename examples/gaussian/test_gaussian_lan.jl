@@ -25,15 +25,28 @@ labels = reshape(labels, 1, length(labels))
 ###################################################################################################
 #                                      Plot Densities
 ###################################################################################################
-# plot predictions against true values 
-idx = rand(1:length(labels), 10000)
+# plot predictions against true values
+idx = rand(1:size(train_y, 2), 100_000) 
+sub_train_y = train_y[idx]
+pred_y = model(train_x[:,:idx])[:]
+residual = pred_y .- sub_train_y
+
 scatter(
-    labels[idx], 
-    model(data[:,idx])[:], 
-    xlabel="true density", 
-    ylabel="predicted density", 
-    grid=false,
-    leg=false
+    sub_train_y, 
+    pred_y, 
+    xlabel = "true density", 
+    ylabel = "predicted density", 
+    grid = false,
+    leg = false
+)
+
+scatter(
+    sub_train_y, 
+    residual, 
+    xlabel = "true density", 
+    ylabel = "residual", 
+    grid = false,
+    leg = false
 )
 
 # interpolated densities 

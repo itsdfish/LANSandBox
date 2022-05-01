@@ -4,7 +4,7 @@
 cd(@__DIR__)
 using Pkg
 Pkg.activate("../..")
-using MKL, Plots, Flux, Distributions, Random, ProgressMeter
+using LANSandBox, MKL, Plots, Flux, Distributions, Random, ProgressMeter
 using Flux: params
 using BSON: @save
 include("functions.jl")
@@ -82,12 +82,26 @@ train_loss,test_loss = train_model(
 loss_plt = plot(1:n_epochs, train_loss, xlabel="Epochs", ylabel="Loss (huber)", label="training")
 plot!(1:n_epochs, test_loss, label="test")
 
-# plot predictions against true values 
+# plot predictions against true values
+idx = rand(1:size(train_y, 2), 100_000) 
+sub_train_y = train_y[idx]
+pred_y = model(train_x[:,:idx])[:]
+residual = pred_y .- sub_train_y
+
 scatter(
-    train_y[:], 
-    model(train_x)[:], 
+    sub_train_y, 
+    pred_y, 
     xlabel = "true density", 
     ylabel = "predicted density", 
+    grid = false,
+    leg = false
+)
+
+scatter(
+    sub_train_y, 
+    residual, 
+    xlabel = "true density", 
+    ylabel = "residual", 
     grid = false,
     leg = false
 )
