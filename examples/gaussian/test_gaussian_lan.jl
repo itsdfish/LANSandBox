@@ -26,9 +26,9 @@ labels = reshape(labels, 1, length(labels))
 #                                      Plot Densities
 ###################################################################################################
 # plot predictions against true values
-idx = rand(1:size(train_y, 2), 100_000) 
+idx = rand(1:size(train_y, 2), 10_000) 
 sub_train_y = train_y[idx]
-pred_y = model(train_x[:,:idx])[:]
+pred_y = model(train_x[:,idx])[:]
 residual = pred_y .- sub_train_y
 
 scatter(

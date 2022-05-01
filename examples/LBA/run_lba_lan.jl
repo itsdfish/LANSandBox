@@ -13,9 +13,9 @@ Random.seed!(858532)
 #                                     Generate Training Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 40_000
+n_parms = 60_000
 # number of data points per parameter vector 
-n_samples = 400
+n_samples = 200
 # training data
 train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 train_x = Float32.(train_x)
@@ -85,7 +85,7 @@ plot!(1:n_epochs, test_loss, label="test")
 # plot predictions against true values
 idx = rand(1:size(train_y, 2), 100_000) 
 sub_train_y = train_y[idx]
-pred_y = model(train_x[:,:idx])[:]
+pred_y = model(train_x[:,idx])[:]
 residual = pred_y .- sub_train_y
 
 scatter(

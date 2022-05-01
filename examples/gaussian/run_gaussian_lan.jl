@@ -83,9 +83,9 @@ loss_plt = plot(1:n_epochs, train_loss, xlabel="Epochs", ylabel="Loss (huber)", 
 plot!(1:n_epochs, test_loss, label="test")
 
 # plot predictions against true values
-idx = rand(1:size(train_y, 2), 100_000) 
+idx = rand(1:size(train_y, 2), 10_000) 
 sub_train_y = train_y[idx]
-pred_y = model(train_x[:,:idx])[:]
+pred_y = model(train_x[:,idx])[:]
 residual = pred_y .- sub_train_y
 
 scatter(

@@ -14,14 +14,14 @@ Random.seed!(858532)
 #                                      Regenerate Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 50_000
+n_parms = 60_000
 # number of data points per parameter vector 
 n_samples = 200
 # training data
 train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 train_x = Float32.(train_x)
 # true values 
-train_y = map(i -> gen_label(train_x[:,i]), 1:size(train_x,2))
+train_y = map(i -> gen_label(train_x[:,i]), 1:size(train_x, 2))
 train_y = Float32.(train_y)
 train_y = reshape(train_y, 1, length(train_y))
 ###################################################################################################
@@ -57,7 +57,7 @@ for i in 1:20
     parms = rand_parms()
     dist = LBA(;parms...)
 
-    x = range(0.1, 3.0, length=100)
+    x = range(0.1, 2.0, length=200)
     y1 = map(x -> pdf(dist, 1, x), x)
     y2 = mapreduce(x -> model([vcat(parms...)...,1,x]), vcat, x)
 

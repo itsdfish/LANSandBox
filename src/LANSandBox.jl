@@ -1,5 +1,6 @@
 module LANSandBox
-    using ProgressMeter
+    using ProgressMeter, Flux
+    using Flux: params
 
     export train_model
 
