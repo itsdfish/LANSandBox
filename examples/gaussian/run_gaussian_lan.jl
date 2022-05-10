@@ -4,7 +4,7 @@
 cd(@__DIR__)
 using Pkg
 Pkg.activate("../..")
-using LANSandBox, MKL, Plots, Flux, Distributions, Random, ProgressMeter
+using MKL, LANSandBox, Plots, Flux, Distributions, Random, ProgressMeter
 using Flux: params
 using BSON: @save
 include("functions.jl")
@@ -22,7 +22,7 @@ train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 # true values 
 train_y = map(i -> pdf(Normal(train_x[1,i], train_x[2,i]), train_x[3,i]), 1:size(train_x,2))
 train_y = reshape(train_y, 1, length(train_y))
-train_data = Flux.Data.DataLoader((train_x, train_y), batchsize=1000)
+train_data = Flux.Data.DataLoader((train_x, train_y), batchsize=10000)
 ###################################################################################################
 #                                     Generate Training Data
 ###################################################################################################
