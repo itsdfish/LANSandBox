@@ -24,5 +24,5 @@ function make_training_data(n)
 end
 
 function gen_label(data)
-    pdf(Wald(;ν=data[1],α=data[2], θ=data[3]), data[4])
+    return pdf(Wald(;ν=data[1], α=data[2], θ=data[3]), data[4])
 end

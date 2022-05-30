@@ -8,13 +8,13 @@ using Plots, Flux, Distributions, Random, ProgressMeter
 using Flux: params
 using BSON: @load
 include("functions.jl")
-Random.seed!(2202152)
+Random.seed!(9958552)
 @load "wald_model.bson" model
 ###################################################################################################
 #                                      Regenerate Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 25_000
+n_parms = 10_000
 # number of data points per parameter vector 
 n_samples = 250
 # training data
@@ -48,15 +48,16 @@ scatter(
     grid = false,
     leg = false
 )
+
 # interpolated densities 
 plots = Plots.Plot[]
 for i in 1:20
     parms = rand_parms()
-    dist = LBA(;parms...)
+    dist = Wald(;parms...)
 
-    x = range(0.1, 3.0, length = 100)
+    x = range(0.1, 2.0, length = 100)
     y1 = map(x -> pdf(dist, x), x)
-    y2 = mapreduce(x -> model([vcat(parms...)...,1,x]), vcat, x)
+    y2 = mapreduce(x -> model([vcat(parms...)...,x]), vcat, x)
 
     p1 = plot(x, y1, grid=false, label="true")
     plot!(x, y2, label="predicted")
