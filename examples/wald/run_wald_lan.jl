@@ -13,7 +13,7 @@ Random.seed!(9958552)
 #                                     Generate Training Data
 ###################################################################################################
 # number of parameter vectors for training 
-n_parms = 10_000
+n_parms = 20_000
 # number of data points per parameter vector 
 n_samples = 250
 # training data
