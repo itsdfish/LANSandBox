@@ -18,10 +18,10 @@ n_parms = 25_000
 # number of data points per parameter vector 
 n_samples = 250
 # training data
-data = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
+train_x = mapreduce(_ -> make_training_data(n_samples), hcat, 1:n_parms)
 # true values 
-labels = map(i -> pdf(Normal(data[1,i], data[2,i]), data[3,i]), 1:size(data,2))
-labels = reshape(labels, 1, length(labels))
+train_y = map(i -> pdf(Normal(train_x[1,i], train_x[2,i]), train_x[3,i]), 1:size(train_x,2))
+train_y = reshape(train_y, 1, length(train_y))
 ###################################################################################################
 #                                      Plot Densities
 ###################################################################################################
