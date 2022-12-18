@@ -4,6 +4,7 @@ authors = ["itsdfish"]
 version = "0.1.0"
 
 [deps]
+ACTRModels = "c095b0ea-a6ca-5cbd-afed-dbab2e976880"
 BSON = "fbb218c0-5317-5bc6-957e-2ee96dd4b1f0"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
@@ -14,9 +15,9 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SequentialSamplingModels = "0e71a2a6-2b30-4447-8742-d083a85e82d1"
 
 [compat]
+ACTRModels = "0.10.0"
 BSON = "0.3.0"
 Distributions = "0.25.0"
-FastActivations = "1"
 Flux = "0.13.0"
 MKL = "0.5.0,0.6.0"
 Plots = "1.27.0"
